@@ -6,8 +6,8 @@ import {
     SafeAreaView
 } from 'react-native'
 import React, { useState } from 'react'
-import ListItem from '../components/ListItem'
-import Data from '../data/data.json'
+import ListItem from '../../components/ListItem'
+import Data from '../../data/data.json'
 
 const Home = ({ navigation, route }) => {
 
