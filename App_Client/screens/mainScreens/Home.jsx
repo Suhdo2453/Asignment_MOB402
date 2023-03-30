@@ -7,10 +7,24 @@ import {
     Button,
     TouchableOpacity
 } from 'react-native'
+import {
+    HeaderButtons,
+    HeaderButton,
+    Item,
+    HiddenItem,
+    OverflowMenu,
+} from 'react-navigation-header-buttons';
+
 import React, { useState } from 'react'
 import ListItem from '../../components/ListItem'
 import Data from '../../data/data.json'
 import Icon from 'react-native-vector-icons/Ionicons'
+
+const IoniconsHeaderButton = (props) => (
+    // the `props` here come from <Item ... />
+    // you may access them and pass something else to `HeaderButton` if you like
+    <HeaderButton IconComponent={Icon} iconSize={23} {...props} />
+);
 
 const Home = ({ navigation, route }) => {
     const [count, setCount] = useState(0);
@@ -18,19 +32,21 @@ const Home = ({ navigation, route }) => {
     React.useEffect(() => {
         navigation.setOptions({
             headerRight: () => (
-                <>
-                    <TouchableOpacity onPress={() => setCount((c) => c + 1)} style={{ marginEnd: 8 }}>
-                        <Icon name='ios-search-sharp' size={24} color={'#666666'} />
-                    </TouchableOpacity>
+                <HeaderButtons HeaderButtonComponent={IoniconsHeaderButton}>
+                    <Item title="search" iconName="ios-search" onPress={() => alert('search')} />
+                    <OverflowMenu
+                        style={{ marginHorizontal: 10 }}
+                        OverflowIcon={({ color }) => <Icon name="ellipsis-vertical" size={23} color={color} />}
+                    >
+                        <HiddenItem title="hidden1" onPress={() => alert('hidden1')} />
+                        <HiddenItem title="hidden2" onPress={() => alert('hidden2')} />
+                    </OverflowMenu>
+                </HeaderButtons>
 
-                    <TouchableOpacity onPress={() => setCount((c) => c + 1)} >
-                        <Icon name='ellipsis-vertical' size={24} color={'#666666'} />
-                    </TouchableOpacity>
-                </>
             ),
             headerTintColor: '#666666',
         });
-    }, [navigation])
+    }, [navigation]);
 
 
     return (
