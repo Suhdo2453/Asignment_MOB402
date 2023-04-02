@@ -1,53 +1,62 @@
-exports.getList = (req, res, next)=>{
-    let accounts =[
-        {
-            full_name: 'Nguyen Tien Dung',
-            username: 'Suhdo',
-            email: 'dungvipnr@gmailcom',
-            password: '243203',
-            role: 'admin',
-            status: 'active'
-        },
-        {
-            full_name: 'Nguyen Tien Dung',
-            username: 'Suhdo',
-            email: 'dungvipnr@gmailcom',
-            password: '243203',
-            role: 'admin',
-            status: 'active'
-        },
-        {
-            full_name: 'Nguyen Van A',
-            username: 'VanA',
-            email: 'dungvipnr@gmailcom',
-            password: '243203',
-            role: 'user',
-            status: 'unactive'
-        },
-        {
-            full_name: 'Nguyen Tien Dung',
-            username: 'Suhdo',
-            email: 'dungvipnr@gmailcom',
-            password: '243203',
-            role: 'admin',
-            status: 'unactive'
-        },
-        {
-            full_name: 'Nguyen Tien Dung',
-            username: 'Suhdo',
-            email: 'dungvipnr@gmailcom',
-            password: '243203',
-            role: 'user',
-            status: 'active'
-        },
-        {
-            full_name: 'Nguyen Tien Dung',
-            username: 'Suhdo',
-            email: 'dungvipnr@gmailcom',
-            password: '243203',
-            role: 'user',
-            status: 'active'
-        },
-    ]
+const { model } = require('mongoose');
+const Model = require('../models/user.model');
+
+exports.getList = async (req, res, next)=>{
+    let accounts = await Model.userModel.find();
     res.render('accounts/list', {title: 'Accounts', accounts});
 }
+
+exports.create = async (req, res, next)=>{
+    let obj = new Model.userModel();
+    obj.username = req.body.username;
+    obj.email = req.body.email;
+    obj.password = req.body.password;
+    obj.role = req.body.role;
+    obj.image = req.file.path.split('\\').slice(1).join('\\');
+
+    try {
+        let new_user = await obj.save();
+        console.log(new_user);
+    } catch (error) {
+        console.log(error);
+    }
+
+    res.redirect('/accounts');
+}
+
+exports.getAccount = async (req, res, next)=>{
+    let objAcc = await Model.userModel.findById(req.params.id);
+    res.render('accounts/editAcc', {objAcc});
+}
+
+exports.editAccount = async (req, res, next)=>{
+    let obj = new Model.userModel();
+    obj._id = req.params.id;
+    obj.username = req.body.username;
+    obj.email = req.body.email;
+    req.file ? obj.image = req.file.path.split('\\').slice(1).join('\\'):
+    obj.role = req.body.role;
+
+    try {
+        await Model.userModel.findByIdAndUpdate(req.params.id, obj);
+        res.redirect('/accounts');
+    } catch (error) {
+        console.log(error);
+    }
+
+}
+
+exports.deleteAccount = async (req, res, next) => {
+    try {
+      const accountId = req.params.id;
+      const deletedAccount = await Model.userModel.findByIdAndDelete(accountId);
+  
+      if (!deletedAccount) {
+        return res.status(404).json({ message: 'Account not found' });
+      }
+      
+      return res.status(200).json({ message: 'Account deleted successfully' });
+    } catch (error) {
+      return res.status(500).json({ message: 'Server error' });
+    }
+  };
