@@ -15,8 +15,12 @@ exports.login= async (req, res, next)=>{
 
             if(obj != null){
                 if(obj.passwd == req.body.passwd){
-                    req.session.userLogin = obj;
-                    res.redirect('/');
+                    if(obj.role == 1){
+                        req.session.userLogin = obj;
+                        return res.redirect('/');
+                    }else{
+                        msg = 'Tài khoản không có quyền truy cập';
+                    }
                 }else{
                     msg = 'Username hoặc password không đúng!';
                 }

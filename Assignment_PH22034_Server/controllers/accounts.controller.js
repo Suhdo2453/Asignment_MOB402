@@ -1,16 +1,37 @@
 const { model } = require('mongoose');
 const Model = require('../models/user.model');
+const url = require('url');
 
 exports.getList = async (req, res, next)=>{
-    let accounts = await Model.userModel.find();
-    res.render('accounts/list', {title: 'Accounts', accounts});
+    let itemsPerPage = 2;
+    let page = parseInt(req.query.page) || 1;
+    const selectedOption = req.query.role; // Lấy giá trị của query parameter "role"  
+    let startIndex = (page - 1) * itemsPerPage;
+    let endIndex = page * itemsPerPage;
+    let role = req.query.role||null;
+    let username = req.query.username||null;
+
+    let condition = {};
+
+    if (role != -1 && role) {
+        condition.role = role;
+    }
+
+    if (username != ''&& username) {
+        condition.username = { $regex: username, $options: 'i' };
+    }
+
+    let accounts = await Model.userModel.find(condition);
+    let items = accounts.slice(startIndex, endIndex);
+    let pageCount = Math.ceil(accounts.length / itemsPerPage);
+    res.render('accounts/list', {title: 'Accounts', accounts: items, pageCount, currentPage: page, selectedOption});
 }
 
 exports.create = async (req, res, next)=>{
     let obj = new Model.userModel();
     obj.username = req.body.username;
     obj.email = req.body.email;
-    obj.password = req.body.password;
+    obj.passwd = req.body.passwd;
     obj.role = req.body.role;
     obj.image = req.file.path.split('\\').slice(1).join('\\');
 
