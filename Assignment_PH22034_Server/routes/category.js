@@ -1,6 +1,9 @@
 var express = require('express');
 var router = express.Router();
 var categoryCtrl = require('../controllers/category.controller');
+var middleware = require('../middlewares/checkLogin');
+
+router.use(middleware.LoginRequired);
 
 router.get('/', categoryCtrl.getList);
 router.post('/edit/:id', categoryCtrl.editProduct);

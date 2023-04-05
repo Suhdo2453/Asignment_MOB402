@@ -18,25 +18,25 @@
                     <div class="card-header bg-dark text-white">
                         <h3 class="mb-0 text-center">Login</h3>
                     </div>
-                    <div class="card-body">
-                        <form>
-                            <div class="form-group">
-                                <label for="inputUsername">User name</label>
-                                <input type="text" class="form-control" id="inputUsername" style="height: 50px;">
-                            </div>
-                            <div class="form-group">
-                                <label for="inputPassword">Password</label>
-                                <input type="password" class="form-control" id="inputPassword" style="height: 50px;">
-                            </div>
-                            <p>Don't have an account? <a href="/register" class="link-dark">Register now.</a></p>
-                            <div class="row mt-3" style="justify-content: space-around;">
-                                <a href="/" type="submit"
-                                    class="btn btn-light border-dark btn-block text-black col-5">Back</a>
-                                <button type="submit" class="btn btn-dark btn-block col-5">Confirm</button>
-                            </div>
+                    <%= msg %>
+                        <div class="card-body">
+                            <form method="POST" action="/login">
+                                <div class="form-group">
+                                    <label for="inputUsername">User name</label>
+                                    <input type="text" class="form-control" id="inputUsername" style="height: 50px;"
+                                        name="username">
+                                </div>
+                                <div class="form-group">
+                                    <label for="inputPassword">Password</label>
+                                    <input type="password" class="form-control" id="inputPassword" style="height: 50px;"
+                                        name="passwd">
+                                </div>
+                                <div class="row mt-3" style="justify-content: space-around;">
+                                    <button type="submit" class="btn btn-dark btn-block col-5">Confirm</button>
+                                </div>
 
-                        </form>
-                    </div>
+                            </form>
+                        </div>
                 </div>
             </div>
         </div>
