@@ -8,6 +8,7 @@
         <table class="table table-striped table-bordered" id="productTable">
             <thead>
                 <tr>
+                    <th>ID</th>
                     <th>Image</th>
                     <th>Name</th>
                     <th>Category
@@ -30,6 +31,9 @@
                 <!-- Dữ liệu sản phẩm sẽ được load ở đây -->
                 <% data.forEach(function(element, index) { %>
                     <tr>
+                        <td>
+                            <%= element._id %>
+                        </td>
                         <td>
                             <img src="<%= element.image %>" alt="" width="50px">
 
@@ -179,27 +183,48 @@
                 var table = $('#productTable').DataTable({
                     // Cấu hình hiển thị của các cột
                     columnDefs: [
-                        { "width": "10%", "targets": 0, "className": "text-center align-middle", "orderable": false },
-                        { "targets": 1, "className": "text-center align-middle" },
-                        { "targets": 2, "className": "text-center align-middle", "orderable": false },
-                        { "targets": 3, "className": "text-center align-middle" },
+                        { "targets": 0, "className": "text-center align-middle", "orderable": false },
+                        { "width": "10%", "targets": 1, "className": "text-center align-middle", "orderable": false },
+                        { "targets": 2, "className": "text-center align-middle" },
+                        { "targets": 3, "className": "text-center align-middle", "orderable": false },
                         { "targets": 4, "className": "text-center align-middle" },
-                        { "width": "20%", "targets": 5, "className": "text-center align-middle", "orderable": false },
+                        { "targets": 5, "className": "text-center align-middle" },
+                        { "width": "20%", "targets": 6, "className": "text-center align-middle", "orderable": false },
                     ],
                 });
 
-                // Thêm tính năng bộ lọc cột cho cột "group"
-                table.columns(2).every(function () {
-                    var column = this;
-                    var select = $('#group-filter');
+                const select = document.querySelector('#group-filter');
 
-                    select.on('change', function () {
-                        var val = $.fn.dataTable.util.escapeRegex(
-                            $(this).val()
-                        );
+                select.addEventListener('change', async () => {
+                    const selectedOption = select.value;
 
-                        column.search(val ? '^' + val + '$' : '', true, false).draw();
-                    });
+                    try {
+                        const response = await fetch(`/products?categoryId=${selectedOption}`);
+                        const data = await response.json();
+
+                        // Xử lý dữ liệu trả về từ server
+                        const table = $('#productTable').DataTable();
+
+                        // Xóa toàn bộ nội dung cũ của bảng
+                        table.clear();
+
+                        // Thêm các hàng mới vào bảng
+                        data.forEach((item) => {
+                            table.row.add([
+                                item._id,
+                                item.image,
+                                item.name,
+                                item.category,
+                                item.description,
+                                item.price
+                            ]);
+                        });
+
+                        // Vẽ lại bảng với nội dung mới
+                        table.draw();
+                    } catch (error) {
+                        console.log(error);
+                    }
                 });
             });
         </script>

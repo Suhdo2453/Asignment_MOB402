@@ -1,0 +1,145 @@
+<%- include('../inc/header') %>
+    <div class="container my-5" style="min-height: 100vh;">
+        <h1 style="margin-top: 70px;">Products</h1>
+        <hr>
+        <button type="button" class="btn btn-primary mb-3" data-toggle="modal" data-target="#addProductModal">
+            Add Product
+        </button>
+        <table class="table table-striped table-bordered" id="productTable">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Dữ liệu sẽ được load ở đây -->
+                <% data.forEach(function(element, index) { %>
+                    <tr>
+                        <td>
+                            <%= element._id %>
+                        </td>
+                        <td>
+                            <%= element.name %>
+                        </td>
+                        <td class="dt-center">
+                            <a href="/category/edit/<%= element._id %>" type="button"
+                                class="btn btn-sm btn-info edit-btn">
+                                <i class="fas fa-edit"></i>
+                                Edit
+                            </a>
+                            <button type="button" class="btn btn-sm btn-danger delete-btn" data-id="<%= element._id %>">
+                                <i class="fas fa-trash"></i>
+                                Delete
+                            </button>
+                        </td>
+                    </tr>
+                    <% }); %>
+            </tbody>
+        </table>
+    </div>
+    <%- include('../inc/footer') %>
+
+        <!-- Modal nhập sản phẩm -->
+        <div class="modal fade" id="addProductModal" tabindex="-1" role="dialog" aria-labelledby="addProductModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="addProductModalLabel">Add Product</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <!-- Form nhập thông tin sản phẩm mới -->
+                        <form class="row g-3" method="POST" action="/category/create">
+                            <div class="col-12">
+                                <label for="inputName" class="form-label">Name</label>
+                                <input type="text" class="form-control" id="inputName" name="name" required>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-primary">Save</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Link các script của datatable và bootstrap -->
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script src="https://cdn.datatables.net/1.11.4/js/jquery.dataTables.min.js"></script>
+        <script src="https://cdn.datatables.net/1.11.4/js/dataTables.bootstrap4.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.6.0/js/bootstrap.min.js"></script>
+        <!-- Script để load dữ liệu sản phẩm và xử lý sự kiện khi click vào nút sửa hoặc xóa -->
+        <script>
+
+
+
+            const deleteAccount = async (id) => {
+                try {
+                    const response = await fetch(`/category/delete/${id}`, {
+                        method: 'DELETE',
+                    });
+
+                    const data = await response.json();
+
+                    if (response.ok) {
+                        // Xóa tài khoản thành công
+                        console.log(data.message);
+                        location.reload();
+                    } else {
+                        // Xóa tài khoản thất bại
+                        console.log('Delete account failed');
+                    }
+                } catch (error) {
+                    console.log(error.message);
+                }
+            };
+
+            const deleteBtns = document.querySelectorAll('.delete-btn');
+
+            deleteBtns.forEach((btn) => {
+                btn.addEventListener('click', (event) => {
+                    const accountId = event.target.dataset.id;
+                    const confirmDelete = confirm('Are you sure to delete this account?');
+
+                    if (confirmDelete) {
+                        deleteAccount(accountId);
+                    }
+                });
+            });
+
+            $(document).ready(function () {
+                // Khởi tạo datatable
+                var table = $('#productTable').DataTable({
+                    // Cấu hình hiển thị của các cột
+                    columnDefs: [
+                        { "targets": 0, "className": "text-center align-middle" },
+                        { "targets": 1, "className": "text-center align-middle" },
+                        { "targets": 2, "className": "text-center align-middle", "orderable": false }
+                    ],
+                });
+            });
+
+            // // Lắng nghe sự kiện search của DataTable
+            // $('#productTable').on('search.dt', function () {
+            //     // Lấy giá trị ô input tìm kiếm
+            //     const searchTerm = $('.dataTables_filter input').val();
+
+            //     // Gửi request lên server với giá trị tìm kiếm
+            //     $.ajax({
+            //         url: '/category/search',
+            //         data: { text: searchTerm },
+            //         success: function (result) {
+            //             // Cập nhật dữ liệu trên DataTable
+            //             $('#productTable').DataTable().clear().rows.add(result).draw();
+            //         }
+            //     });
+            // });
+        </script>

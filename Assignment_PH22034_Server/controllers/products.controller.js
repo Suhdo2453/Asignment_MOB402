@@ -3,7 +3,11 @@ const category = require('../models/category.model');
 
 exports.getList= async (req, res, next)=> {
     // Dữ liệu mẫu
-    let data = await product.productModel.find().populate('category');
+    let _query = null;
+    if (typeof(req.query.categoryId)!= 'undefined') {
+        _query = {category: req.query.categoryId};
+    }
+    let data = await product.productModel.find(_query).populate('category');
     let categories = await category.categoryModel.find();
     res.render('products/list', {data, categories});
 }
@@ -64,4 +68,14 @@ exports.delete = async (req, res, next)=>{
       } catch (error) {
         return res.status(500).json({ message: 'Server error' });
       }
+}
+
+exports.find = async (req, res, next)=>{
+    let query = null;
+    if (typeof(req.query.categoryId)!= 'undefined') {
+        dieu_kien_loc = {price: {$gte: req.query.price}};
+    }
+    let data = await product.productModel.find(query);
+    console.log(data);
+    res.send(data);
 }

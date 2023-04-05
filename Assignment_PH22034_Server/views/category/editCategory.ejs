@@ -1,0 +1,24 @@
+<%- include('../inc/header') %>
+
+    <div class="d-flex justify-content-center align-items-center bg-secondary" style="min-height: 100vh;">
+        <div class="container my-5 card p-5 d-flex justify-content-center align-items-center">
+            <div class="col-md-6">
+                <form class="row g-3" method="POST" action="/category/edit/<%= objPD._id %>">
+                    <!-- form content -->
+                    <div class="col-12">
+                        <label for="inputName" class="form-label">Name</label>
+                        <input type="text" class="form-control" id="inputName" name="name" value="<%= objPD.name %>">
+                    </div>
+                    <div class="col-12">
+                        <div class="modal-footer">
+                            <a href="/category" type="button" class="btn btn-secondary me-3"
+                                data-dismiss="modal">Close</a>
+                            <button type="submit" class="btn btn-primary">Save</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <%- include('../inc/footer') %>
