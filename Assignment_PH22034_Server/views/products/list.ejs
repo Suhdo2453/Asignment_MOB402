@@ -30,13 +30,14 @@
                 </div>
 
                 <div class="table-responsive">
-                    <table class="table table-striped table-hover table-bordered border-top" id="productTable">
+                    <table class="table table-striped table-hover table-bordered border-top align-middle"
+                        id="productTable">
                         <thead>
                             <tr>
-                                <th>ID</th>
-                                <th>Image</th>
-                                <th>Name</th>
-                                <th>Category
+                                <th class="text-center">ID</th>
+                                <th class="text-center">Image</th>
+                                <th class="text-center">Name</th>
+                                <th class="text-center">Category
                                     <select id="group-filter" class="form-select-sm float-end">
                                         <option value="">All</option>
                                         <% categories.forEach(category=>{ %>
@@ -47,35 +48,43 @@
                                             <% }) %>
                                     </select>
                                 </th>
-                                <th>Description</th>
-                                <th>Price</th>
-                                <th>Action</th>
+                                <th class="text-center col-2">Description</th>
+                                <th class="text-center">
+                                    <a class="text-decoration-none text-dark"
+                                        href="/products?sort=price&amp;order=<%= order == -1 ? 1 : -1 %>&amp;page=<%= currentPage %>">
+                                        Price
+                                        <% if (sort==='price' ) { %>
+                                            <i class="fas <%= order == -1 ? 'fa-sort-up' : 'fa-sort-down' %>"></i>
+                                            <% } %>
+                                    </a>
+                                </th>
+                                <th class="text-center">Action</th>
                             </tr>
                         </thead>
                         <tbody>
                             <!-- Dữ liệu sản phẩm sẽ được load ở đây -->
                             <% data.forEach(function(element, index) { %>
-                                <tr>
-                                    <td>
+                                <tr data-id="<%= element._id %>">
+                                    <td class="text-center">
                                         <%= element._id %>
                                     </td>
-                                    <td>
+                                    <td class="text-center">
                                         <img src="<%= element.image %>" alt="" width="50px">
 
                                     </td>
-                                    <td>
+                                    <td class="text-center">
                                         <%= element.name %>
                                     </td>
-                                    <td>
+                                    <td class="text-center">
                                         <%= element.category.name %>
                                     </td>
-                                    <td>
+                                    <td class="text-center">
                                         <%= element.description %>
                                     </td>
-                                    <td>
+                                    <td class="text-center">
                                         <%= element.price %>
                                     </td>
-                                    <td class="dt-center">
+                                    <td class="text-center">
                                         <a href="/products/edit/<%= element._id %>" type="button"
                                             class="btn btn-sm btn-info edit-btn">
                                             <i class="fas fa-edit"></i>
@@ -96,7 +105,7 @@
                     <ul class="pagination justify-content-end">
                         <li class="page-item <%= currentPage - 1 == 0? ' disabled':''; %>">
                             <a class="page-link"
-                                href="/products?page=<%= currentPage-1 %>&category=<%= selectedOption %>">
+                                href="/products?sort=<%= sort %>&amp;order=<%= order %>&amp;page=<%= currentPage-1 %>&category=<%= selectedOption %>">
                                 <span aria-hidden="true">&laquo;</span>
                             </a>
                         </li>
@@ -104,14 +113,14 @@
                             : '' ; %>
                             <li class="page-item <%= active %>">
                                 <a class="page-link"
-                                    href="/products?page=<%= index+1 %>&category=<%= selectedOption %>">
+                                    href="/products?sort=<%= sort %>&amp;order=<%= order %>&amp;page=<%= index+1 %>&category=<%= selectedOption %>">
                                     <%= index+1 %>
                                 </a>
                             </li>
                             <% } %>
                                 <li class="page-item <%= currentPage == pageCount? ' disabled':''; %>"><a
                                         class="page-link"
-                                        href="/products?page=<%= currentPage+1 %>&category=<%= selectedOption %>"><span
+                                        href="/products?sort=<%= sort %>&amp;order=<%= order %>&amp;page=<%= currentPage+1 %>&category=<%= selectedOption %>"><span
                                             aria-hidden="true">&raquo;</span></a>
                                 </li>
                     </ul>
@@ -242,5 +251,17 @@
 
                 // Chuyển hướng đến trang mới với query string đã tạo
                 window.location.href = queryString;
+            });
+
+            const rows = document.querySelectorAll('table tbody tr');
+            rows.forEach(row => {
+                row.addEventListener('click', () => {
+                    const id = row.dataset.id;
+                    // Tạo query string với giá trị của page và option được chọn
+                    const queryString = `/products/detail?id=${id}`;
+
+                    // Chuyển hướng đến trang mới với query string đã tạo
+                    window.location.href = queryString;
+                });
             });
         </script>

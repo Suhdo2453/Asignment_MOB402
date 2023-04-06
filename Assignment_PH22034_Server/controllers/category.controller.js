@@ -6,18 +6,20 @@ exports.getList= async (req, res, next)=> {
     let startIndex = (page - 1) * itemsPerPage;
     let endIndex = page * itemsPerPage;
     let name = req.query.name||null;
+    let sort = req.query.sort || 'name'; // trường mặc định để sắp xếp là createdAt
+    let order = req.query.order; // hướng sắp xếp, -1 là giảm dần, 1 là tăng dần
     let condition = {};
 
     if (name != ''&& name) {
         condition.name = { $regex: name, $options: 'i' };
     }
 
-    let data = await Model.categoryModel.find(condition);
+    let data = await Model.categoryModel.find(condition).sort({ [sort]: order });
 
     let pageCount = Math.ceil(data.length / itemsPerPage);
     let items = data.slice(startIndex, endIndex);
 
-    res.render('category/list', {title: 'Category', data:items, pageCount, currentPage: page});
+    res.render('category/list', {title: 'Category', data:items, pageCount, currentPage: page, order, sort});
 }
 
 exports.getProduct= async (req, res, next)=> {

@@ -1,0 +1,29 @@
+<%- include('../inc/header') %>
+
+    <div class="d-flex justify-content-center align-items-center" style="min-height: 100vh;">
+        <div class="card mx-auto">
+            <!-- Nội dung của card -->
+            <div class="card">
+                <img src="/<%= data.image %>" class="justify-content-center" alt="Product Image" width="500">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <%= data.name %>
+                    </h5>
+                    <p class="card-text">
+                        <%= data.description %>
+                    </p>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item"><strong>Price:</strong>
+                            <%= data.price %>
+                        </li>
+                        <li class="list-group-item"><strong>Category:</strong>
+                            <%= data.category.name %>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <%- include('../inc/footer') %>

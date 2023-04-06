@@ -13,5 +13,6 @@ router.post('/edit/:id',upload.single('imageEdit'), productCtrl.editProduct);
 router.get('/edit/:id', productCtrl.getProduct);
 router.post('/create',upload.single('image'), productCtrl.create);
 router.delete('/delete/:id', productCtrl.delete);
+router.get('/detail', productCtrl.detail);
 
 module.exports = router;

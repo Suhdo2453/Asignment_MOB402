@@ -4,12 +4,13 @@ const categoryMD = require('../models/category.model');
 exports.getList= async (req, res, next)=> {
     let itemsPerPage = 2;
     let page = parseInt(req.query.page) || 1;
-    const selectedOption = req.query.category;  
+    let selectedOption = req.query.category;  
     let startIndex = (page - 1) * itemsPerPage;
     let endIndex = page * itemsPerPage;
     let category = req.query.category||null;
     let name = req.query.name||null;
-
+    let sort = req.query.sort || 'price';
+    let order = req.query.order; // hướng sắp xếp, -1 là giảm dần, 1 là tăng dần
     let condition = {};
 
     if (category != '' && category) {
@@ -20,12 +21,14 @@ exports.getList= async (req, res, next)=> {
         condition.name = { $regex: name, $options: 'i' };
     }
 
-    let data = await product.productModel.find(condition).populate('category');
+    let data = await product.productModel.find(condition)
+                                        .sort({ [sort]: order })
+                                        .populate('category');
     let categories = await categoryMD.categoryModel.find();
 
     let pageCount = Math.ceil(data.length / itemsPerPage);
     let items = data.slice(startIndex, endIndex);
-    res.render('products/list', {title: 'Products',  data:items, pageCount, currentPage: page, selectedOption, categories});
+    res.render('products/list', {title: 'Products',  data:items, pageCount, currentPage: page, selectedOption, categories, sort, order});
 }
 
 exports.getProduct= async (req, res, next)=> {
@@ -94,4 +97,12 @@ exports.find = async (req, res, next)=>{
     let data = await product.productModel.find(query);
     console.log(data);
     res.send(data);
+}
+
+exports.detail = async (req, res, next)=>{
+    let data = await product.productModel.findOne({_id:req.query.id}).populate('category');
+    console.log(data);
+
+    res.render('products/detail', {data});
+
 }
