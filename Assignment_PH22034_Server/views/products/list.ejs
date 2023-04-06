@@ -1,70 +1,123 @@
 <%- include('../inc/header') %>
-    <div class="container my-5" style="min-height: 100vh;">
-        <h1 style="margin-top: 70px;">Products</h1>
-        <hr>
-        <button type="button" class="btn btn-primary mb-3" data-toggle="modal" data-target="#addProductModal">
-            Add Product
-        </button>
-        <table class="table table-striped table-bordered" id="productTable">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Image</th>
-                    <th>Name</th>
-                    <th>Category
-                        <select id="group-filter" class="form-select-sm float-end">
-                            <option value="">All</option>
-                            <% categories.forEach(category=>{ %>
-                                <option value="<%= category._id %>">
-                                    <%= category.name %>
-                                </option>
-                                <% }) %>
 
-                        </select>
-                    </th>
-                    <th>Description</th>
-                    <th>Price</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                <!-- Dữ liệu sản phẩm sẽ được load ở đây -->
-                <% data.forEach(function(element, index) { %>
-                    <tr>
-                        <td>
-                            <%= element._id %>
-                        </td>
-                        <td>
-                            <img src="<%= element.image %>" alt="" width="50px">
 
-                        </td>
-                        <td>
-                            <%= element.name %>
-                        </td>
-                        <td>
-                            <%= element.category.name %>
-                        </td>
-                        <td>
-                            <%= element.description %>
-                        </td>
-                        <td>
-                            <%= element.price %>
-                        </td>
-                        <td class="dt-center">
-                            <a href="/products/edit/<%= element._id %>" type="button"
-                                class="btn btn-sm btn-info edit-btn">
-                                <i class="fas fa-edit"></i>
-                                Edit
+    <div class="container mt-5" style="min-height: 100vh;">
+        <div class="row">
+            <div class="col-md-12">
+
+                <h1 class="border-bottom" style=" margin-top: 70px;">
+                    <%= title %>
+                </h1>
+
+                <div class="d-flex justify-content-end my-3">
+                    <form class="row row-cols-lg-auto g-3 align-items-center" method="GET" action="/products">
+                        <div class="col-12">
+                            <label class="visually-hidden" for="inlineFormInputGroupUsername">Name product</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" id="inlineFormInputGroupUsername"
+                                    placeholder="Name products" name="name">
+                            </div>
+                        </div>
+
+                        <div class="col-12">
+                            <button type="submit" class="btn btn-primary">Search</button>
+                        </div>
+                    </form>
+                    <button type="button" class="btn btn-primary ms-3" data-toggle="modal"
+                        data-target="#addProductModal">
+                        Add Product
+                    </button>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover table-bordered border-top" id="productTable">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Image</th>
+                                <th>Name</th>
+                                <th>Category
+                                    <select id="group-filter" class="form-select-sm float-end">
+                                        <option value="">All</option>
+                                        <% categories.forEach(category=>{ %>
+                                            <option value="<%= category._id %>"
+                                                <%=selectedOption==category._id? " selected" : "" %>>
+                                                <%= category.name %>
+                                            </option>
+                                            <% }) %>
+                                    </select>
+                                </th>
+                                <th>Description</th>
+                                <th>Price</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Dữ liệu sản phẩm sẽ được load ở đây -->
+                            <% data.forEach(function(element, index) { %>
+                                <tr>
+                                    <td>
+                                        <%= element._id %>
+                                    </td>
+                                    <td>
+                                        <img src="<%= element.image %>" alt="" width="50px">
+
+                                    </td>
+                                    <td>
+                                        <%= element.name %>
+                                    </td>
+                                    <td>
+                                        <%= element.category.name %>
+                                    </td>
+                                    <td>
+                                        <%= element.description %>
+                                    </td>
+                                    <td>
+                                        <%= element.price %>
+                                    </td>
+                                    <td class="dt-center">
+                                        <a href="/products/edit/<%= element._id %>" type="button"
+                                            class="btn btn-sm btn-info edit-btn">
+                                            <i class="fas fa-edit"></i>
+                                            Edit
+                                        </a>
+                                        <button type="button" class="btn btn-sm btn-danger delete-btn"
+                                            data-id="<%= element._id %>">
+                                            <i class="fas fa-trash"></i>
+                                            Delete
+                                        </button>
+                                    </td>
+                                </tr>
+                                <% }); %>
+                        </tbody>
+                    </table>
+                </div>
+                <nav class="mt-4">
+                    <ul class="pagination justify-content-end">
+                        <li class="page-item <%= currentPage - 1 == 0? ' disabled':''; %>">
+                            <a class="page-link"
+                                href="/products?page=<%= currentPage-1 %>&category=<%= selectedOption %>">
+                                <span aria-hidden="true">&laquo;</span>
                             </a>
-                            <button type="button" class="btn btn-sm btn-danger delete-btn" data-id="<%= element._id %>">
-                                <i class="fas fa-trash"></i>
-                                Delete
-                            </button>
-                        </td>
-                    </tr>
-                    <% }); %>
-            </tbody>
-        </table>
+                        </li>
+                        <% for (let index=0; index < pageCount; index++) { let active=currentPage==index+1 ? ' active'
+                            : '' ; %>
+                            <li class="page-item <%= active %>">
+                                <a class="page-link"
+                                    href="/products?page=<%= index+1 %>&category=<%= selectedOption %>">
+                                    <%= index+1 %>
+                                </a>
+                            </li>
+                            <% } %>
+                                <li class="page-item <%= currentPage == pageCount? ' disabled':''; %>"><a
+                                        class="page-link"
+                                        href="/products?page=<%= currentPage+1 %>&category=<%= selectedOption %>"><span
+                                            aria-hidden="true">&raquo;</span></a>
+                                </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
     </div>
     <%- include('../inc/footer') %>
 
@@ -178,53 +231,16 @@
                 });
             });
 
-            $(document).ready(function () {
-                // Khởi tạo datatable
-                var table = $('#productTable').DataTable({
-                    // Cấu hình hiển thị của các cột
-                    columnDefs: [
-                        { "targets": 0, "className": "text-center align-middle", "orderable": false },
-                        { "width": "10%", "targets": 1, "className": "text-center align-middle", "orderable": false },
-                        { "targets": 2, "className": "text-center align-middle" },
-                        { "targets": 3, "className": "text-center align-middle", "orderable": false },
-                        { "targets": 4, "className": "text-center align-middle" },
-                        { "targets": 5, "className": "text-center align-middle" },
-                        { "width": "20%", "targets": 6, "className": "text-center align-middle", "orderable": false },
-                    ],
-                });
+            // Lấy thẻ select và đăng ký sự kiện onchange
+            const select = document.querySelector('#group-filter');
+            select.addEventListener('change', () => {
+                const selectedOption = select.value;
+                const currentPage = <%= currentPage %>; // Lấy giá trị từ EJS
 
-                const select = document.querySelector('#group-filter');
+                // Tạo query string với giá trị của page và option được chọn
+                const queryString = `/products?page=${currentPage}&category=${selectedOption}`;
 
-                select.addEventListener('change', async () => {
-                    const selectedOption = select.value;
-
-                    try {
-                        const response = await fetch(`/products?categoryId=${selectedOption}`);
-                        const data = await response.json();
-
-                        // Xử lý dữ liệu trả về từ server
-                        const table = $('#productTable').DataTable();
-
-                        // Xóa toàn bộ nội dung cũ của bảng
-                        table.clear();
-
-                        // Thêm các hàng mới vào bảng
-                        data.forEach((item) => {
-                            table.row.add([
-                                item._id,
-                                item.image,
-                                item.name,
-                                item.category,
-                                item.description,
-                                item.price
-                            ]);
-                        });
-
-                        // Vẽ lại bảng với nội dung mới
-                        table.draw();
-                    } catch (error) {
-                        console.log(error);
-                    }
-                });
+                // Chuyển hướng đến trang mới với query string đã tạo
+                window.location.href = queryString;
             });
         </script>

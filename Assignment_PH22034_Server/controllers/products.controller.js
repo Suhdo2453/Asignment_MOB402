@@ -1,20 +1,36 @@
 const product = require('../models/product.model');
-const category = require('../models/category.model');
+const categoryMD = require('../models/category.model');
 
 exports.getList= async (req, res, next)=> {
-    // Dữ liệu mẫu
-    let _query = null;
-    if (typeof(req.query.categoryId)!= 'undefined') {
-        _query = {category: req.query.categoryId};
+    let itemsPerPage = 2;
+    let page = parseInt(req.query.page) || 1;
+    const selectedOption = req.query.category;  
+    let startIndex = (page - 1) * itemsPerPage;
+    let endIndex = page * itemsPerPage;
+    let category = req.query.category||null;
+    let name = req.query.name||null;
+
+    let condition = {};
+
+    if (category != '' && category) {
+        condition.category = category;
     }
-    let data = await product.productModel.find(_query).populate('category');
-    let categories = await category.categoryModel.find();
-    res.render('products/list', {data, categories});
+
+    if (name != ''&& name) {
+        condition.name = { $regex: name, $options: 'i' };
+    }
+
+    let data = await product.productModel.find(condition).populate('category');
+    let categories = await categoryMD.categoryModel.find();
+
+    let pageCount = Math.ceil(data.length / itemsPerPage);
+    let items = data.slice(startIndex, endIndex);
+    res.render('products/list', {title: 'Products',  data:items, pageCount, currentPage: page, selectedOption, categories});
 }
 
 exports.getProduct= async (req, res, next)=> {
     let objPD = await product.productModel.findById(req.params.id).populate('category');
-    let categories = await category.categoryModel.find();
+    let categories = await categoryMD.categoryModel.find();
     res.render('products/editProduct', {objPD, categories});
 }
 

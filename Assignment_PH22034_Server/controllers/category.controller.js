@@ -1,9 +1,23 @@
 const Model = require('../models/category.model');
 
 exports.getList= async (req, res, next)=> {
-    // Dữ liệu mẫu
-    let data = await Model.categoryModel.find();
-    res.render('category/list', {data});
+    let itemsPerPage = 2;
+    let page = parseInt(req.query.page) || 1;
+    let startIndex = (page - 1) * itemsPerPage;
+    let endIndex = page * itemsPerPage;
+    let name = req.query.name||null;
+    let condition = {};
+
+    if (name != ''&& name) {
+        condition.name = { $regex: name, $options: 'i' };
+    }
+
+    let data = await Model.categoryModel.find(condition);
+
+    let pageCount = Math.ceil(data.length / itemsPerPage);
+    let items = data.slice(startIndex, endIndex);
+
+    res.render('category/list', {title: 'Category', data:items, pageCount, currentPage: page});
 }
 
 exports.getProduct= async (req, res, next)=> {

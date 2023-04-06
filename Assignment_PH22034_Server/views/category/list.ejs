@@ -1,43 +1,90 @@
 <%- include('../inc/header') %>
-    <div class="container my-5" style="min-height: 100vh;">
-        <h1 style="margin-top: 70px;">Products</h1>
-        <hr>
-        <button type="button" class="btn btn-primary mb-3" data-toggle="modal" data-target="#addProductModal">
-            Add Product
-        </button>
-        <table class="table table-striped table-bordered" id="productTable">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Name</th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                <!-- Dữ liệu sẽ được load ở đây -->
-                <% data.forEach(function(element, index) { %>
-                    <tr>
-                        <td>
-                            <%= element._id %>
-                        </td>
-                        <td>
-                            <%= element.name %>
-                        </td>
-                        <td class="dt-center">
-                            <a href="/category/edit/<%= element._id %>" type="button"
-                                class="btn btn-sm btn-info edit-btn">
-                                <i class="fas fa-edit"></i>
-                                Edit
-                            </a>
-                            <button type="button" class="btn btn-sm btn-danger delete-btn" data-id="<%= element._id %>">
-                                <i class="fas fa-trash"></i>
-                                Delete
-                            </button>
-                        </td>
-                    </tr>
-                    <% }); %>
-            </tbody>
-        </table>
+
+    <div class="container mt-5" style="min-height: 100vh;">
+        <div class="row">
+            <div class="col-md-12">
+
+                <h1 class="border-bottom" style=" margin-top: 70px;">
+                    <%= title %>
+                </h1>
+
+                <div class="d-flex justify-content-end my-3">
+                    <form class="row row-cols-lg-auto g-3 align-items-center" method="GET" action="/category">
+                        <div class="col-12">
+                            <label class="visually-hidden" for="inlineFormInputGroupUsername">Username</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" id="inlineFormInputGroupUsername"
+                                    placeholder="Username" name="name">
+                            </div>
+                        </div>
+
+                        <div class="col-12">
+                            <button type="submit" class="btn btn-primary">Search</button>
+                        </div>
+                    </form>
+                    <button type="button" class="btn btn-primary ms-3" data-toggle="modal"
+                        data-target="#addProductModal">
+                        Add Category
+                    </button>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover table-bordered border-top" id="productTable">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Dữ liệu sẽ được load ở đây -->
+                            <% data.forEach(function(element, index) { %>
+                                <tr>
+                                    <td>
+                                        <%= element._id %>
+                                    </td>
+                                    <td>
+                                        <%= element.name %>
+                                    </td>
+                                    <td class="dt-center">
+                                        <a href="/category/edit/<%= element._id %>" type="button"
+                                            class="btn btn-sm btn-info edit-btn">
+                                            <i class="fas fa-edit"></i>
+                                            Edit
+                                        </a>
+                                        <button type="button" class="btn btn-sm btn-danger delete-btn"
+                                            data-id="<%= element._id %>">
+                                            <i class="fas fa-trash"></i>
+                                            Delete
+                                        </button>
+                                    </td>
+                                </tr>
+                                <% }); %>
+                        </tbody>
+                    </table>
+                </div>
+                <nav class="mt-4">
+                    <ul class="pagination justify-content-end">
+                        <li class="page-item <%= currentPage - 1 == 0? ' disabled':''; %>"><a class="page-link"
+                                href="/category?page=<%= currentPage-1 %>"><span aria-hidden="true">&laquo;</span></a>
+                        </li>
+                        <% for (let index=0; index < pageCount; index++) { let active=currentPage==index+1 ? ' active'
+                            : '' ; %>
+                            <li class="page-item <%= active %>">
+                                <a class="page-link" href="/category?page=<%= index+1 %>">
+                                    <%= index+1 %>
+                                </a>
+                            </li>
+                            <% } %>
+                                <li class="page-item <%= currentPage == pageCount? ' disabled':''; %>"><a
+                                        class="page-link" href="/category?page=<%= currentPage+1 %>"><span
+                                            aria-hidden="true">&raquo;</span></a>
+                                </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
     </div>
     <%- include('../inc/footer') %>
 
@@ -115,31 +162,4 @@
                 });
             });
 
-            $(document).ready(function () {
-                // Khởi tạo datatable
-                var table = $('#productTable').DataTable({
-                    // Cấu hình hiển thị của các cột
-                    columnDefs: [
-                        { "targets": 0, "className": "text-center align-middle" },
-                        { "targets": 1, "className": "text-center align-middle" },
-                        { "targets": 2, "className": "text-center align-middle", "orderable": false }
-                    ],
-                });
-            });
-
-            // // Lắng nghe sự kiện search của DataTable
-            // $('#productTable').on('search.dt', function () {
-            //     // Lấy giá trị ô input tìm kiếm
-            //     const searchTerm = $('.dataTables_filter input').val();
-
-            //     // Gửi request lên server với giá trị tìm kiếm
-            //     $.ajax({
-            //         url: '/category/search',
-            //         data: { text: searchTerm },
-            //         success: function (result) {
-            //             // Cập nhật dữ liệu trên DataTable
-            //             $('#productTable').DataTable().clear().rows.add(result).draw();
-            //         }
-            //     });
-            // });
         </script>
