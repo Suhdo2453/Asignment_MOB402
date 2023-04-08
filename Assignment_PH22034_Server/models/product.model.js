@@ -1,4 +1,5 @@
 const db = require('../data/db');
+const sortablePlugin = require('../plugins/plugin');
 
 const productSchema = db.mongoose.Schema(
     {
@@ -10,8 +11,9 @@ const productSchema = db.mongoose.Schema(
     },
     {
         collection: 'products',
-    }
-    );
+    });
+
+    productSchema.plugin(sortablePlugin);
 
     let productModel = db.mongoose.model('productModel', productSchema);
 

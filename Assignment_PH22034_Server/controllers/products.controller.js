@@ -1,16 +1,13 @@
 const product = require('../models/product.model');
 const categoryMD = require('../models/category.model');
+const paginate = require('../ultilities/pagination');
 
 exports.getList= async (req, res, next)=> {
     let itemsPerPage = 2;
     let page = parseInt(req.query.page) || 1;
-    let selectedOption = req.query.category;  
-    let startIndex = (page - 1) * itemsPerPage;
-    let endIndex = page * itemsPerPage;
+    let selectedOption = req.query.category;
     let category = req.query.category||null;
     let name = req.query.name||null;
-    let sort = req.query.sort || 'price';
-    let order = req.query.order; // hướng sắp xếp, -1 là giảm dần, 1 là tăng dần
     let condition = {};
 
     if (category != '' && category) {
@@ -21,14 +18,18 @@ exports.getList= async (req, res, next)=> {
         condition.name = { $regex: name, $options: 'i' };
     }
 
-    let data = await product.productModel.find(condition)
-                                        .sort({ [sort]: order })
-                                        .populate('category');
+    const { items, pageCount, totalItems } = await paginate(
+        product.productModel,
+        condition,
+        itemsPerPage,
+        page,
+        req,
+        'category'
+      );
+
     let categories = await categoryMD.categoryModel.find();
 
-    let pageCount = Math.ceil(data.length / itemsPerPage);
-    let items = data.slice(startIndex, endIndex);
-    res.render('products/list', {title: 'Products',  data:items, pageCount, currentPage: page, selectedOption, categories, sort, order});
+    res.render('products/list', {title: 'Products',  data:items, pageCount, selectedOption, categories});
 }
 
 exports.getProduct= async (req, res, next)=> {
@@ -87,16 +88,6 @@ exports.delete = async (req, res, next)=>{
       } catch (error) {
         return res.status(500).json({ message: 'Server error' });
       }
-}
-
-exports.find = async (req, res, next)=>{
-    let query = null;
-    if (typeof(req.query.categoryId)!= 'undefined') {
-        dieu_kien_loc = {price: {$gte: req.query.price}};
-    }
-    let data = await product.productModel.find(query);
-    console.log(data);
-    res.send(data);
 }
 
 exports.detail = async (req, res, next)=>{

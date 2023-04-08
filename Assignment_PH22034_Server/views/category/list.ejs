@@ -33,12 +33,15 @@
                         <thead>
                             <tr>
                                 <th class="text-center col-4">ID</th>
-                                <th class="text-center col-4"> <a class="text-decoration-none text-dark"
+                                <th class="text-center col-4">
+                                    <a class="text-decoration-none text-dark"
                                         href="/category?sort=name&amp;order=<%= order == -1 ? 1 : -1 %>&amp;page=<%= currentPage %>">
                                         Name
-                                        <% if (sort==='name' ) { %>
+                                        <% if (sort!==null ) { %>
                                             <i class="fas <%= order == -1 ? 'fa-sort-up' : 'fa-sort-down' %>"></i>
-                                            <% } %>
+                                            <% } else {%>
+                                                <i class="fas fa-sort-down"></i>
+                                                <%}%>
                                     </a>
                                 </th>
                                 <th class="text-center col-4"></th>

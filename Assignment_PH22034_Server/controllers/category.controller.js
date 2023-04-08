@@ -1,25 +1,25 @@
 const Model = require('../models/category.model');
+const paginate = require('../ultilities/pagination');
 
 exports.getList= async (req, res, next)=> {
     let itemsPerPage = 2;
     let page = parseInt(req.query.page) || 1;
-    let startIndex = (page - 1) * itemsPerPage;
-    let endIndex = page * itemsPerPage;
     let name = req.query.name||null;
-    let sort = req.query.sort || 'name'; // trường mặc định để sắp xếp là createdAt
-    let order = req.query.order; // hướng sắp xếp, -1 là giảm dần, 1 là tăng dần
     let condition = {};
 
     if (name != ''&& name) {
         condition.name = { $regex: name, $options: 'i' };
     }
 
-    let data = await Model.categoryModel.find(condition).sort({ [sort]: order });
+    const { items, pageCount, totalItems } = await paginate(
+        Model.categoryModel,
+        condition,
+        itemsPerPage,
+        page,
+        req
+      );
 
-    let pageCount = Math.ceil(data.length / itemsPerPage);
-    let items = data.slice(startIndex, endIndex);
-
-    res.render('category/list', {title: 'Category', data:items, pageCount, currentPage: page, order, sort});
+    res.render('category/list', {title: 'Category', data:items, pageCount});
 }
 
 exports.getProduct= async (req, res, next)=> {
@@ -69,10 +69,4 @@ exports.delete = async (req, res, next)=>{
       } catch (error) {
         return res.status(500).json({ message: 'Server error' });
       }
-}
-
-exports.searchCategory = async (req, res, next)=>{
-    const regex = new RegExp(req.query.text, 'i');
-    let categories = await Model.categoryModel.find({name: regex});
-    res.json(categories);
 }

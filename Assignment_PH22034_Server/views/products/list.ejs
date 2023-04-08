@@ -53,9 +53,11 @@
                                     <a class="text-decoration-none text-dark"
                                         href="/products?sort=price&amp;order=<%= order == -1 ? 1 : -1 %>&amp;page=<%= currentPage %>">
                                         Price
-                                        <% if (sort==='price' ) { %>
+                                        <% if (sort!==null ) { %>
                                             <i class="fas <%= order == -1 ? 'fa-sort-up' : 'fa-sort-down' %>"></i>
-                                            <% } %>
+                                            <% } else {%>
+                                                <i class="fas fa-sort-down"></i>
+                                                <%}%>
                                     </a>
                                 </th>
                                 <th class="text-center">Action</th>

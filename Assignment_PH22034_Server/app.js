@@ -9,6 +9,7 @@ var homeRouter = require('./routes/home');
 var accountsRouter = require('./routes/accounts');
 var productRouter = require('./routes/products');
 var categoryRouter = require('./routes/category');
+var middleware = require('./middlewares/checkLogin');
 
 var app = express();
 
@@ -28,10 +29,20 @@ app.use(session({
   saveUninitialized: true
 }));
 
+
 app.use('/', homeRouter);
-app.use('/accounts', accountsRouter);
-app.use('/products', productRouter);
-app.use('/category', categoryRouter);
+app.use('/accounts',
+    middleware.LoginRequired,
+    middleware.SortMiddleware,
+    accountsRouter);
+app.use('/products',
+    middleware.LoginRequired,
+    middleware.SortMiddleware,
+    productRouter);
+app.use('/category', 
+    middleware.LoginRequired, 
+    middleware.SortMiddleware,
+    categoryRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

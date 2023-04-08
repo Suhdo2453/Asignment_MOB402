@@ -1,13 +1,11 @@
 const { model } = require('mongoose');
 const Model = require('../models/user.model');
-const url = require('url');
+const paginate = require('../ultilities/pagination');
 
 exports.getList = async (req, res, next)=>{
     let itemsPerPage = 2;
     let page = parseInt(req.query.page) || 1;
-    const selectedOption = req.query.role; // Lấy giá trị của query parameter "role"  
-    let startIndex = (page - 1) * itemsPerPage;
-    let endIndex = page * itemsPerPage;
+    const selectedOption = req.query.role;
     let role = req.query.role||null;
     let username = req.query.username||null;
 
@@ -21,10 +19,15 @@ exports.getList = async (req, res, next)=>{
         condition.username = { $regex: username, $options: 'i' };
     }
 
-    let accounts = await Model.userModel.find(condition);
-    let items = accounts.slice(startIndex, endIndex);
-    let pageCount = Math.ceil(accounts.length / itemsPerPage);
-    res.render('accounts/list', {title: 'Accounts', accounts: items, pageCount, currentPage: page, selectedOption});
+    const { items, pageCount, totalItems } = await paginate(
+        Model.userModel,
+        condition,
+        itemsPerPage,
+        page,
+        req
+      );
+
+    res.render('accounts/list', {title: 'Accounts', items, pageCount, selectedOption});
 }
 
 exports.create = async (req, res, next)=>{
