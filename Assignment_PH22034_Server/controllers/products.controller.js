@@ -49,7 +49,7 @@ let id = req.params.id;
     try {
         if(req.file){
             fs.renameSync(req.file.path, './public/upload/'+req.file.originalname);
-        obj.image = '/upload/' + req.file.originalname;
+            obj.image = '/upload/' + req.file.originalname;
         }
     } catch (error) {
         console.log(error);

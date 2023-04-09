@@ -4,7 +4,7 @@ var router = express.Router();
 var productCtrl = require('../controllers/products.controller');
 var middleware = require('../middlewares/checkLogin');
 
-var upload = multer({dest: './public/upload'});
+var upload = multer({dest: './tmp'});
 
 router.use(middleware.LoginRequired);
 

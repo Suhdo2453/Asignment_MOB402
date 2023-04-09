@@ -1,6 +1,8 @@
 const { model } = require('mongoose');
 const Model = require('../models/user.model');
 const paginate = require('../ultilities/pagination');
+const bcrypt = require("bcrypt");
+const fs = require('fs');
 
 exports.getList = async (req, res, next)=>{
     let itemsPerPage = 2;
@@ -31,12 +33,20 @@ exports.getList = async (req, res, next)=>{
 }
 
 exports.create = async (req, res, next)=>{
+    var salt = await bcrypt.genSalt(10);
     let obj = new Model.userModel();
     obj.username = req.body.username;
     obj.email = req.body.email;
-    obj.passwd = req.body.passwd;
+    obj.passwd = await bcrypt.hash(req.body.passwd, salt);
     obj.role = req.body.role;
-    obj.image = req.file.path.split('\\').slice(1).join('\\');
+    try {
+        if(req.file){
+            fs.renameSync(req.file.path, './public/upload/'+req.file.originalname);
+        obj.image = '/upload/' + req.file.originalname;
+        }
+    } catch (error) {
+        console.log(error);
+    }
 
     try {
         let new_user = await obj.save();
@@ -58,7 +68,14 @@ exports.editAccount = async (req, res, next)=>{
     obj._id = req.params.id;
     obj.username = req.body.username;
     obj.email = req.body.email;
-    req.file ? obj.image = req.file.path.split('\\').slice(1).join('\\'):
+    try {
+        if(req.file){
+            fs.renameSync(req.file.path, './public/upload/'+req.file.originalname);
+            obj.image = '/upload/' + req.file.originalname;
+        }
+    } catch (error) {
+        console.log(error);
+    }
     obj.role = req.body.role;
 
     try {

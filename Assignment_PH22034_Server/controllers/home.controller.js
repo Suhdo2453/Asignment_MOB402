@@ -10,22 +10,18 @@ exports.login= async (req, res, next)=>{
     if(req.method == 'POST'){
 
         try {
-            let obj = await myModel.userModel.findOne({username:req.body.username});
+            let obj = await myModel.userModel.findByCredentials(req.body.username, req.body.passwd);
             console.log(obj);
 
-            if(obj != null){
-                if(obj.passwd == req.body.passwd){
-                    if(obj.role == 1){
-                        req.session.userLogin = obj;
-                        return res.redirect('/');
-                    }else{
-                        msg = 'Tài khoản không có quyền truy cập';
-                    }
+            if(obj){
+                if(obj.role == 1){
+                    req.session.userLogin = obj;
+                    return res.redirect('/');
                 }else{
-                    msg = 'Username hoặc password không đúng!';
+                    msg = 'Tài khoản không có quyền truy cập';
                 }
             }else{
-                msg = 'Tài khoản không tồn tại';
+                msg = 'Username hoặc mật khẩu không đúng';
             }
         } catch (error) {
             msg = error.message;
