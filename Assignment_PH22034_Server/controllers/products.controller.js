@@ -1,6 +1,7 @@
 const product = require('../models/product.model');
 const categoryMD = require('../models/category.model');
 const paginate = require('../ultilities/pagination');
+const fs = require('fs');
 
 exports.getList= async (req, res, next)=> {
     let itemsPerPage = 2;
@@ -45,7 +46,14 @@ let id = req.params.id;
     obj.name = req.body.name;
     obj.description = req.body.description;
     obj.category = req.body.category;
-    req.file?obj.image = req.file.path.split('\\').slice(1).join('\\'):
+    try {
+        if(req.file){
+            fs.renameSync(req.file.path, './public/upload/'+req.file.originalname);
+        obj.image = '/upload/' + req.file.originalname;
+        }
+    } catch (error) {
+        console.log(error);
+    }
     obj.price = req.body.price;
 
     try {
@@ -62,7 +70,14 @@ exports.create = async (req, res, next)=>{
     let obj = new product.productModel();
     obj.name = req.body.name;
     obj.price = req.body.price;
-    obj.image = req.file.path.split('\\').slice(1).join('\\');
+    try {
+        if(req.file){
+            fs.renameSync(req.file.path, './public/upload/'+req.file.originalname);
+            obj.image = '/upload/' + req.file.originalname;
+        }
+    } catch (error) {
+        console.log(error);
+    }
     obj.category = req.body.category;
     obj.description = req.body.description;
 

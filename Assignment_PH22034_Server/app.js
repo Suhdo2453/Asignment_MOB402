@@ -10,6 +10,7 @@ var accountsRouter = require('./routes/accounts');
 var productRouter = require('./routes/products');
 var categoryRouter = require('./routes/category');
 var middleware = require('./middlewares/checkLogin');
+var apiRouter = require('./routes/api');
 
 var app = express();
 
@@ -30,6 +31,7 @@ app.use(session({
 }));
 
 
+app.use('/api', apiRouter);
 app.use('/', homeRouter);
 app.use('/accounts',
     middleware.LoginRequired,
@@ -57,7 +59,17 @@ app.use(function(err, req, res, next) {
 
   // render the error page
   res.status(err.status || 500);
-  res.render('error');
+
+  // API Address: /api/xxxx
+  if(req.originalUrl.indexOf('/api') === 0){
+    res.json(
+      {
+        msg: err.message
+      }
+    );
+  }else{
+    res.render('error');
+  }
 });
 
 module.exports = app;
