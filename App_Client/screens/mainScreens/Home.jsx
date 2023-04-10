@@ -32,15 +32,18 @@ const IoniconsHeaderButton = (props) => (
 const Home = ({ navigation, route }) => {
     const [isLoading, setLoading] = useState(false);
     const [data, setData] = useState([]);
+    const [userInfo, setUserInfo] = useState(null);
 
     const getData = async () => {
         //lấy thông tin user từ async store
-        const userInfo = await getUserInfo();
+        const user = await getUserInfo()
+        setUserInfo(user);
+
 
         axios.get('https://bc7d-117-1-109-141.ngrok-free.app/api/products',
             {
                 headers: {
-                    Authorization: 'Bearer ' + userInfo.token
+                    Authorization: 'Bearer ' + user.token
                 }
             })
             .then(async (res) => {
@@ -51,6 +54,10 @@ const Home = ({ navigation, route }) => {
             }).finally(() => {
                 setLoading(false);
             });
+    }
+
+    const itemHandler = (id) => {
+        navigation.navigate('Detail', { id: id, token: userInfo.token });
     }
 
     React.useEffect(() => {
@@ -79,7 +86,7 @@ const Home = ({ navigation, route }) => {
             <FlatList
                 numColumns={2}
                 data={data}
-                renderItem={({ item }) => <ListItem item={item} />}
+                renderItem={({ item }) => <ListItem item={item} onPress={() => itemHandler(item._id)} />}
                 keyExtractor={(item) => `${item._id}`}
                 refreshControl={
                     <RefreshControl refreshing={isLoading}

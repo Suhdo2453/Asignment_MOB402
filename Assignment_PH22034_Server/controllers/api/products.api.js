@@ -31,7 +31,7 @@ exports.getList= async (req, res, next)=> {
 exports.getOne= async (req, res, next)=>{
     var id = req.params.id; // Lấy ID từ đường dẫn
     try {
-        let data = await product.productModel.findById(id);
+        let data = await product.productModel.findById(id).populate('category');
         console.log(data);
         if (data) {
             return res.status(200).json(
