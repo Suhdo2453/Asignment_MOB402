@@ -4,7 +4,7 @@ import * as ImagePicker from 'expo-image-picker';
 import Icon from 'react-native-vector-icons/FontAwesome5'
 
 
-const ImagePickerScreen = ({ handleImagePicked }) => {
+const ImagePickerScreen = ({ handleImagePicked, imageDefault }) => {
     const [imageSource, setImageSource] = useState(null);
 
     const pickImage = async () => {
@@ -29,7 +29,8 @@ const ImagePickerScreen = ({ handleImagePicked }) => {
                     {imageSource ? (
                         <Image source={{ uri: imageSource }} style={styles.avatar} />
                     ) : (
-                        <Image source={require('../assets/icon.png')} style={styles.avatar} />
+                        imageDefault ? <Image source={{ uri: `https://bc7d-117-1-109-141.ngrok-free.app${imageDefault}` }} style={styles.avatar} /> :
+                            <Image source={require('../assets/icon.png')} style={styles.avatar} />
                     )}
                 </TouchableOpacity>
 

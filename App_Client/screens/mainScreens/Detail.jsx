@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Image, ActivityIndicator } from 'react-native'
+import { StyleSheet, Text, View, Image, ActivityIndicator, ScrollView } from 'react-native'
 import React, { useState } from 'react'
 import { useRoute } from '@react-navigation/native';
 import axios from 'axios';
@@ -41,7 +41,7 @@ const Detail = () => {
     }
 
     return (
-        <View style={styles.container}>
+        <ScrollView style={styles.container}>
             <Image source={{ uri: `https://bc7d-117-1-109-141.ngrok-free.app${product ? product.image : ''}` }} style={styles.image} />
             <View style={styles.detailsContainer}>
                 <Text style={styles.name}>{product.name}</Text>
@@ -49,7 +49,7 @@ const Detail = () => {
                 <Text style={styles.category}>Category: {product.category.name}</Text>
                 <Text style={styles.description}>{product.description}</Text>
             </View>
-        </View>
+        </ScrollView>
     )
 }
 

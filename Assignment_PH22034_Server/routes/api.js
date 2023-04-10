@@ -16,7 +16,8 @@ router.post('/reg',upload.single('image'), user_api.reg);
 router.get('/testget', product_api.getList);
 router.post('/testpost', user_api.test);
 
-router.get('/profile',mdw.api_auth ,user_api.profile); // lấy thông tin user
+router.get('/profile',mdw.api_auth, user_api.profile); // lấy thông tin user
+router.put('/profile', mdw.api_auth, upload.single('image'), user_api.editProfile);
 router.get('/logout',mdw.api_auth, user_api.logout); // đăng xuất
 
 //router.post('/users', user_api.add);

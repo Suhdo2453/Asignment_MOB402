@@ -61,6 +61,7 @@ const Home = ({ navigation, route }) => {
     }
 
     React.useEffect(() => {
+        getData();
         navigation.setOptions({
             headerRight: () => (
                 <HeaderButtons HeaderButtonComponent={IoniconsHeaderButton}>
@@ -69,15 +70,15 @@ const Home = ({ navigation, route }) => {
                         style={{ marginHorizontal: 10 }}
                         OverflowIcon={({ color }) => <Icon name="ellipsis-vertical" size={23} color={color} />}
                     >
-                        <HiddenItem title="hidden1" onPress={() => alert('hidden1')} />
-                        <HiddenItem title="hidden2" onPress={() => alert('hidden2')} />
+                        <HiddenItem title="Account" onPress={() => navigation.navigate('EditAccount', { token: userInfo.token })} />
+                        <HiddenItem title="Logout" onPress={() => alert('hidden2')} />
                     </OverflowMenu>
                 </HeaderButtons>
 
             ),
             headerTintColor: '#666666',
         });
-        getData();
+
     }, [navigation]);
 
 

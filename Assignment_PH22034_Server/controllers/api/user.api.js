@@ -57,6 +57,30 @@ exports.profile = (req, res, next)=>{
    // res.json( {status: 1, msg: 'Trang thông tin'});
 }
 
+exports.editProfile = async (req, res, next)=>{
+    try {
+        const user = await model.userModel.findOne({token: req.body.token});
+        if (!user) {
+          return res.status(404).send({ message: 'User not found' });
+        }
+        try {
+            if(req.file){
+                fs.renameSync(req.file.path, './public/upload/'+req.file.originalname);
+                user.image = '/upload/' + req.file.originalname;
+            }
+        } catch (error) {
+            console.log(error);
+        }
+        user.name = req.body.name || user.name;
+        user.email = req.body.email || user.email;
+        const updatedUser = await user.save();
+        res.send(updatedUser);
+      } catch (error) {
+        console.log(error);
+        res.status(500).send({ message: 'Server error' });
+      }
+}
+
 exports.logout = async (req, res, next)=>{
     try {
         console.log( req.user);
