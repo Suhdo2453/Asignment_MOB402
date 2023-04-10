@@ -7,7 +7,7 @@ const windowWidth = Dimensions.get('window').width
 const ListItem = ({ item }) => {
     return (
         <View style={styles.container}>
-            <Image style={styles.image} source={image} />
+            <Image style={styles.image} source={{uri: `https://bc7d-117-1-109-141.ngrok-free.app${item.image}`}} />
             <View>
                 <Text style={styles.title}>{item.name}</Text>
                 <Text style={styles.price}>{item.price}</Text>

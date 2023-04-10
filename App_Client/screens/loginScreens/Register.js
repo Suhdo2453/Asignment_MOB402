@@ -1,11 +1,61 @@
-import { Image, Keyboard, KeyboardAvoidingView, StyleSheet, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native'
+import { Image, Keyboard, ActivityIndicator, KeyboardAvoidingView, StyleSheet, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native'
 import React, { useState } from 'react'
 import { myStyles } from '../../MyStyle'
 import ButtonCustom from '../../components/ButtonCustom'
-import Icon from 'react-native-vector-icons/FontAwesome5'
+import ImagePickerScreen from '../../components/ImagePicker';
+import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Register = ({ navigation }) => {
+    const [loading, setLoading] = useState(false);
 
+    const [username, setUsername] = useState('');
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [repassword, setRepassword] = useState('');
+    const [avatar, setAvatar] = useState(null);
+
+    const handleImagePicked = (result) => {
+        if (result) {
+            setAvatar(result);
+        }
+    };
+
+    const handleRegister = async () => {
+        setLoading(true);
+        // Tạo đối tượng formData để chứa dữ liệu đăng ký
+        const formData = new FormData();
+        formData.append('username', username);
+        formData.append('email', email);
+        formData.append('passwd', password);
+
+        // const response = await fetch(avatar.uri);
+        // const blob = await response.blob();
+        const filename = avatar.uri.split('/').pop();
+        formData.append('image', { uri: avatar.uri, type: 'image/jpeg', name: filename });
+        console.log({ uri: avatar.uri, type: 'image/jpeg', name: filename });
+
+        // Gửi request lên server
+        axios.post('https://bc7d-117-1-109-141.ngrok-free.app/api/reg',
+            formData,
+            {
+                headers: {
+                    //'Authorization': 'Bearer ' + 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NDMzODk3YzExMmFhM2UyYmZkMWYwYjMiLCJ1c2VybmFtZSI6IkRhIiwiaWF0IjoxNjgxMDk5MTMyfQ.-rDRpR18emusNswvQcvo55CTUHb0crcq1ervgD_uhuU',
+                    'Content-Type': 'multipart/form-data'
+                }
+            }
+        ).then(async (response) => {
+            console.log(response.data);
+            await AsyncStorage.setItem('userInfo', JSON.stringify(response.data));
+            setLoading(false);
+            navigation.reset({
+                index: 0,
+                routes: [{ name: 'Main' }],
+            });
+        }).catch((error) => {
+            console.log(error);
+        });
+    };
     return (
 
         <View style={styles.container}>
@@ -17,28 +67,22 @@ const Register = ({ navigation }) => {
                     a greatful journey</Text>
                 <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                     <View style={styles.textInputWrapper}>
-                        <View >
-                            <TouchableOpacity >
-                                        <Image source={require('../../assets/icon.png')} style={styles.avatar} />
-                            </TouchableOpacity>
 
-                            <TouchableOpacity >
-                                <Icon name='pen' size={16} style={styles.editBtn} />
-                            </TouchableOpacity>
+                        <ImagePickerScreen handleImagePicked={handleImagePicked} />
 
-                        </View>
-
-                        <TextInput placeholder='User Name' style={myStyles.textInput} />
-                        <TextInput placeholder='Full Name' style={myStyles.textInput} />
-                        <TextInput placeholder='Password' style={myStyles.textInput} secureTextEntry/>
-                        <TextInput placeholder='Repassword' style={myStyles.textInput} secureTextEntry />
+                        <TextInput onChangeText={setUsername} placeholder='User Name' style={myStyles.textInput} />
+                        <TextInput onChangeText={setEmail} placeholder='Email' style={myStyles.textInput} />
+                        <TextInput onChangeText={setPassword} placeholder='Password' style={myStyles.textInput} secureTextEntry />
+                        <TextInput onChangeText={setRepassword} placeholder='Repassword' style={myStyles.textInput} secureTextEntry />
                         <TouchableOpacity style={{ alignSelf: 'flex-end' }}>
                             <Text style={styles.forgotBtn}>Forgot Password ?</Text>
                         </TouchableOpacity>
                     </View>
                 </TouchableWithoutFeedback>
             </KeyboardAvoidingView>
-            <ButtonCustom title={'Sign in'} />
+            <ButtonCustom title={'Sign in'} onPress={handleRegister} />
+
+            {loading && <ActivityIndicator size="large" style={styles.indicator} color={'#1e1e1e'} animating={true} />}
 
             <View style={styles.wrapper}>
                 <Text>Already  have an account ? </Text>
@@ -60,6 +104,15 @@ const styles = StyleSheet.create({
         flex: 1,
         flexDirection: 'column',
         paddingHorizontal: 16
+    },
+    indicator: {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        backgroundColor: 'rgba(255, 255, 255, 0.5)',
+        zIndex: 1,
     },
     title: {
         marginTop: 50,

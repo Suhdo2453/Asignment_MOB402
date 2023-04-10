@@ -11,7 +11,7 @@ exports.login = async (req, res, next) => {
                     .json({error: 'Sai thông tin đăng nhập'});
         }
         // đăng nhập thành công, tạo token làm việc mới
-        const token = await user.generateAuthToken();
+        await user.generateAuthToken();
 
         return res.status(200).json({ user });
 
@@ -30,7 +30,7 @@ exports.reg = async (req, res, next)=>{
         user.passwd = await bcrypt.hash(req.body.passwd, salt);
  
         user.token = await user.generateAuthToken();
-
+        console.log(req.file);
         // lưu ảnh và tạo đường dẫn ảnh nếu có
         try {
             if(req.file){
@@ -69,4 +69,8 @@ exports.logout = async (req, res, next)=>{
         res.status(500).send(error.message);
     }
 //    res.json( {status: 1, msg: 'Trang đăng xuất'});
+}
+
+exports.test = async (req, res, next)=>{
+    res.status(200).json({msg: 'thanh cong'});
 }

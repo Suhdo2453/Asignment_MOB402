@@ -5,7 +5,8 @@ import {
     FlatList,
     SafeAreaView,
     Button,
-    TouchableOpacity
+    TouchableOpacity,
+    RefreshControl
 } from 'react-native'
 import {
     HeaderButtons,
@@ -19,6 +20,8 @@ import React, { useState } from 'react'
 import ListItem from '../../components/ListItem'
 import Data from '../../data/data.json'
 import Icon from 'react-native-vector-icons/Ionicons'
+import axios from 'axios';
+import getUserInfo from '../../components/GetUserInfo';
 
 const IoniconsHeaderButton = (props) => (
     // the `props` here come from <Item ... />
@@ -27,7 +30,28 @@ const IoniconsHeaderButton = (props) => (
 );
 
 const Home = ({ navigation, route }) => {
-    const [count, setCount] = useState(0);
+    const [isLoading, setLoading] = useState(false);
+    const [data, setData] = useState([]);
+
+    const getData = async () => {
+        //lấy thông tin user từ async store
+        const userInfo = await getUserInfo();
+
+        axios.get('https://bc7d-117-1-109-141.ngrok-free.app/api/products',
+            {
+                headers: {
+                    Authorization: 'Bearer ' + userInfo.token
+                }
+            })
+            .then(async (res) => {
+                setData(res.data.data);
+            })
+            .catch(err => {
+                console.log(err);
+            }).finally(() => {
+                setLoading(false);
+            });
+    }
 
     React.useEffect(() => {
         navigation.setOptions({
@@ -46,17 +70,24 @@ const Home = ({ navigation, route }) => {
             ),
             headerTintColor: '#666666',
         });
+        getData();
     }, [navigation]);
 
 
     return (
         <SafeAreaView style={styles.container}>
-            <Text>Count: {count}</Text>
             <FlatList
                 numColumns={2}
-                data={Data.items}
+                data={data}
                 renderItem={({ item }) => <ListItem item={item} />}
-                keyExtractor={(item) => `${item.id}`}
+                keyExtractor={(item) => `${item._id}`}
+                refreshControl={
+                    <RefreshControl refreshing={isLoading}
+                        onRefresh={() => {
+                            setLoading(true)
+                            getData()
+                        }} />
+                }
             />
         </SafeAreaView>
     );
