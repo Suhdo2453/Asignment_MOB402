@@ -32,18 +32,21 @@ const IoniconsHeaderButton = (props) => (
 const Home = ({ navigation, route }) => {
     const [isLoading, setLoading] = useState(false);
     const [data, setData] = useState([]);
-    const [userInfo, setUserInfo] = useState(null);
+    var token = '';
 
     const getData = async () => {
         //lấy thông tin user từ async store
-        const user = await getUserInfo()
-        setUserInfo(user);
+        if (token == '') {
+            const user = await getUserInfo()
+            token = user.token
+        }
+
 
 
         axios.get('https://bc7d-117-1-109-141.ngrok-free.app/api/products',
             {
                 headers: {
-                    Authorization: 'Bearer ' + user.token
+                    Authorization: `Bearer ${token}`
                 }
             })
             .then(async (res) => {
@@ -57,7 +60,7 @@ const Home = ({ navigation, route }) => {
     }
 
     const itemHandler = (id) => {
-        navigation.navigate('Detail', { id: id, token: userInfo.token });
+        navigation.navigate('Detail', { id: id, token: token });
     }
 
     React.useEffect(() => {
@@ -65,12 +68,12 @@ const Home = ({ navigation, route }) => {
         navigation.setOptions({
             headerRight: () => (
                 <HeaderButtons HeaderButtonComponent={IoniconsHeaderButton}>
-                    <Item title="search" iconName="ios-search" onPress={() => alert('search')} />
+                    <Item title="search" iconName="ios-search" onPress={() => navigation.navigate('Search')} />
                     <OverflowMenu
                         style={{ marginHorizontal: 10 }}
                         OverflowIcon={({ color }) => <Icon name="ellipsis-vertical" size={23} color={color} />}
                     >
-                        <HiddenItem title="Account" onPress={() => navigation.navigate('EditAccount', { token: userInfo.token })} />
+                        <HiddenItem title="Account" onPress={() => navigation.navigate('EditAccount', { token: token })} />
                         <HiddenItem title="Logout" onPress={() => alert('hidden2')} />
                     </OverflowMenu>
                 </HeaderButtons>

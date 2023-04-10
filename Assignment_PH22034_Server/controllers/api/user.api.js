@@ -71,7 +71,7 @@ exports.editProfile = async (req, res, next)=>{
         } catch (error) {
             console.log(error);
         }
-        user.name = req.body.name || user.name;
+        user.username = req.body.username || user.username;
         user.email = req.body.email || user.email;
         const updatedUser = await user.save();
         res.send(updatedUser);

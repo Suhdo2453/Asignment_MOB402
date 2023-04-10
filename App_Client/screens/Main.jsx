@@ -3,6 +3,7 @@ import React from 'react'
 import Home from './mainScreens/Home';
 import Detail from "./mainScreens/Detail";
 import EditAccount from './mainScreens/EditAccount';
+import Search from "./mainScreens/SearchScreen";
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { OverflowMenuProvider } from 'react-navigation-header-buttons';
 
@@ -22,6 +23,9 @@ const Main = () => {
                 <Stack.Screen
                     name='EditAccount'
                     component={EditAccount} />
+                <Stack.Screen
+                    name='Search'
+                    component={Search} />
             </Stack.Navigator>
         </OverflowMenuProvider>
     )

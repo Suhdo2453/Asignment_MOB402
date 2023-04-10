@@ -6,7 +6,7 @@ import ImagePickerScreen from '../../components/ImagePicker';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import getUserInfo from '../../components/GetUserInfo';
-import { useRoute } from '@react-navigation/native';
+import { useFocusEffect, useRoute } from '@react-navigation/native';
 
 const Register = ({ navigation }) => {
     const route = useRoute();
@@ -15,6 +15,8 @@ const Register = ({ navigation }) => {
 
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
+    const [oldusername, setOldUsername] = useState('');
+    const [oldemail, setOldEmail] = useState('');
     const [avatar, setAvatar] = useState(null);
     const [image, setImage] = useState(null);
 
@@ -36,7 +38,6 @@ const Register = ({ navigation }) => {
                 setUsername(res.data.username);
                 setImage(res.data.image);
                 setEmail(res.data.email);
-                setLoading(false);
             }).catch((err) => console.log(err))
             .finally(() => { setLoading(false) })
     }
@@ -45,6 +46,7 @@ const Register = ({ navigation }) => {
         setLoading(true);
         // Tạo đối tượng formData để chứa dữ liệu đăng ký
         const formData = new FormData();
+        console.log(username, email);
         formData.append('username', username);
         formData.append('email', email);
         formData.append('token', token);
@@ -79,6 +81,9 @@ const Register = ({ navigation }) => {
     React.useEffect(() => {
         getProfile();
     }, [])
+    // useFocusEffect(() => {
+    //     getProfile();
+    // });
     return (
 
         <View style={styles.container}>

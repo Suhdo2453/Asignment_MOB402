@@ -1,9 +1,19 @@
 const product = require('../../models/product.model');
 
 exports.getList= async (req, res, next)=> {
-
+    var condition = {}
     try {
-        let data = await product.productModel.find();
+        if(req.query.search_text){
+            condition.name = { $regex: req.query.search_text, $options: 'i' }
+        }else if(req.query.search_text === ''){
+            return res.status(200).json(
+                {
+                    msg: 'get data',
+                    data: null
+                }
+            );
+        }
+        let data = await product.productModel.find(condition);
         if(data){
             return res.status(200).json(
                 {
