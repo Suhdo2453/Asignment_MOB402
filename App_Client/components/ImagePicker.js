@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { View, TouchableOpacity, StyleSheet, Text, Image } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import Icon from 'react-native-vector-icons/FontAwesome5'
+import { URL_API } from '../data/API';
 
 
 const ImagePickerScreen = ({ handleImagePicked, imageDefault }) => {
@@ -29,7 +30,7 @@ const ImagePickerScreen = ({ handleImagePicked, imageDefault }) => {
                     {imageSource ? (
                         <Image source={{ uri: imageSource }} style={styles.avatar} />
                     ) : (
-                        imageDefault ? <Image source={{ uri: `https://bc7d-117-1-109-141.ngrok-free.app${imageDefault}` }} style={styles.avatar} /> :
+                        imageDefault ? <Image source={{ uri: `${URL_API + imageDefault}` }} style={styles.avatar} /> :
                             <Image source={require('../assets/icon.png')} style={styles.avatar} />
                     )}
                 </TouchableOpacity>

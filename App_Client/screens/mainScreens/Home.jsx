@@ -6,7 +6,9 @@ import {
     SafeAreaView,
     Button,
     TouchableOpacity,
-    RefreshControl
+    RefreshControl,
+    Alert,
+    ToastAndroid
 } from 'react-native'
 import {
     HeaderButtons,
@@ -18,10 +20,11 @@ import {
 
 import React, { useState } from 'react'
 import ListItem from '../../components/ListItem'
-import Data from '../../data/data.json'
 import Icon from 'react-native-vector-icons/Ionicons'
 import axios from 'axios';
 import getUserInfo from '../../components/GetUserInfo';
+import { API_LOGOUT, API_PRODUCT } from '../../data/API';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const IoniconsHeaderButton = (props) => (
     // the `props` here come from <Item ... />
@@ -30,6 +33,7 @@ const IoniconsHeaderButton = (props) => (
 );
 
 const Home = ({ navigation, route }) => {
+    const [showLogoutDialog, setShowLogoutDialog] = useState(false);
     const [isLoading, setLoading] = useState(false);
     const [data, setData] = useState([]);
     var token = '';
@@ -43,7 +47,7 @@ const Home = ({ navigation, route }) => {
 
 
 
-        axios.get('https://bc7d-117-1-109-141.ngrok-free.app/api/products',
+        axios.get(API_PRODUCT,
             {
                 headers: {
                     Authorization: `Bearer ${token}`
@@ -62,6 +66,56 @@ const Home = ({ navigation, route }) => {
     const itemHandler = (id) => {
         navigation.navigate('Detail', { id: id, token: token });
     }
+    const handleLogout = () => {
+        setShowLogoutDialog(true);
+    };
+
+    const handleLogoutConfirmed = async () => {
+        // Gửi API logout ở đây
+        setShowLogoutDialog(false);
+        setLoading(true);
+        axios.get(API_LOGOUT,
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            })
+            .then(async (res) => {
+                await AsyncStorage.clear();
+                token = '';
+                ToastAndroid.show('Logout Success', ToastAndroid.SHORT);
+            })
+            .catch(err => {
+                console.log(err);
+            }).finally(() => {
+                setLoading(false);
+            });
+        // Điều hướng đến trang đăng nhập
+        navigation.reset({
+            index: 0,
+            routes: [{ name: 'Login' }],
+        });
+    };
+
+    const handleLogoutCancelled = () => {
+        setShowLogoutDialog(false);
+    };
+
+    const logout = () => {
+        Alert.alert(
+            'Xác nhận đăng xuất',
+            'Bạn có chắc chắn muốn đăng xuất không?',
+            [
+                {
+                    text: 'Hủy',
+                    onPress: handleLogoutCancelled,
+                    style: 'cancel',
+                },
+                { text: 'Đăng xuất', onPress: handleLogoutConfirmed },
+            ],
+            { cancelable: false }
+        );
+    };
 
     React.useEffect(() => {
         getData();
@@ -73,8 +127,8 @@ const Home = ({ navigation, route }) => {
                         style={{ marginHorizontal: 10 }}
                         OverflowIcon={({ color }) => <Icon name="ellipsis-vertical" size={23} color={color} />}
                     >
-                        <HiddenItem title="Account" onPress={() => navigation.navigate('EditAccount', { token: token })} />
-                        <HiddenItem title="Logout" onPress={() => alert('hidden2')} />
+                        <HiddenItem title="Account" onPress={() => navigation.navigate('EditAccount')} />
+                        <HiddenItem title="Logout" onPress={() => logout()} />
                     </OverflowMenu>
                 </HeaderButtons>
 

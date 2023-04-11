@@ -4,7 +4,7 @@ const paginate = require('../ultilities/pagination');
 const fs = require('fs');
 
 exports.getList= async (req, res, next)=> {
-    let itemsPerPage = 2;
+    let itemsPerPage = 5;
     let page = parseInt(req.query.page) || 1;
     let selectedOption = req.query.category;
     let category = req.query.category||null;

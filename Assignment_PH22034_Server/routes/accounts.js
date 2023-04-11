@@ -12,7 +12,7 @@ router.use(middleware.LoginRequired);
 router.get('/',accountsCtrl.getList);
 router.get('/edit/:id', accountsCtrl.getAccount);
 router.post('/edit/:id',upload.single('image'), accountsCtrl.editAccount);
-router.post('/create',upload.single('image'), accountsCtrl.create);
+router.post('/create',middleware.validateUserFields, upload.single('image'), accountsCtrl.create);
 router.delete('/delete/:id', accountsCtrl.deleteAccount);
 
 module.exports = router;

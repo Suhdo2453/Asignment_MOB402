@@ -3,8 +3,10 @@ import React, { useState } from 'react'
 import { myStyles } from '../../MyStyle'
 import ButtonCustom from '../../components/ButtonCustom'
 import ImagePickerScreen from '../../components/ImagePicker';
+import { API_REG } from '../../data/API'
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { validateRegisterInputs } from '../../ulti/validate';
 
 const Register = ({ navigation }) => {
     const [loading, setLoading] = useState(false);
@@ -22,6 +24,7 @@ const Register = ({ navigation }) => {
     };
 
     const handleRegister = async () => {
+        if (!validateRegisterInputs(username, email, password, repassword, avatar)) return;
         setLoading(true);
         // Tạo đối tượng formData để chứa dữ liệu đăng ký
         const formData = new FormData();
@@ -29,18 +32,16 @@ const Register = ({ navigation }) => {
         formData.append('email', email);
         formData.append('passwd', password);
 
-        // const response = await fetch(avatar.uri);
-        // const blob = await response.blob();
+
         const filename = avatar.uri.split('/').pop();
         formData.append('image', { uri: avatar.uri, type: 'image/jpeg', name: filename });
         console.log({ uri: avatar.uri, type: 'image/jpeg', name: filename });
 
         // Gửi request lên server
-        axios.post('https://bc7d-117-1-109-141.ngrok-free.app/api/reg',
+        axios.post(`${API_REG}`,
             formData,
             {
                 headers: {
-                    //'Authorization': 'Bearer ' + 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NDMzODk3YzExMmFhM2UyYmZkMWYwYjMiLCJ1c2VybmFtZSI6IkRhIiwiaWF0IjoxNjgxMDk5MTMyfQ.-rDRpR18emusNswvQcvo55CTUHb0crcq1ervgD_uhuU',
                     'Content-Type': 'multipart/form-data'
                 }
             }

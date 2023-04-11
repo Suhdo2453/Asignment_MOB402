@@ -7,18 +7,17 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import getUserInfo from '../../components/GetUserInfo';
 import { useFocusEffect, useRoute } from '@react-navigation/native';
+import { API_PROFILE } from '../../data/API';
 
 const Register = ({ navigation }) => {
     const route = useRoute();
-    const { token } = route.params;
     const [loading, setLoading] = useState(false);
 
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
-    const [oldusername, setOldUsername] = useState('');
-    const [oldemail, setOldEmail] = useState('');
     const [avatar, setAvatar] = useState(null);
     const [image, setImage] = useState(null);
+    var token = '';
 
     const handleImagePicked = (result) => {
         if (result) {
@@ -26,9 +25,14 @@ const Register = ({ navigation }) => {
         }
     };
 
-    const getProfile = () => {
+    const getProfile = async () => {
         setLoading(true);
-        axios.get('https://bc7d-117-1-109-141.ngrok-free.app/api/profile',
+
+        if (token == '') {
+            const user = await getUserInfo();
+            token = user.token
+        }
+        axios.get(API_PROFILE,
             {
                 headers: {
                     Authorization: `Bearer ${token}`
@@ -44,6 +48,11 @@ const Register = ({ navigation }) => {
 
     const handleSave = async () => {
         setLoading(true);
+
+        if (token == '') {
+            const user = await getUserInfo();
+            token = user.token
+        }
         // Tạo đối tượng formData để chứa dữ liệu đăng ký
         const formData = new FormData();
         console.log(username, email);
@@ -59,7 +68,7 @@ const Register = ({ navigation }) => {
         }
 
         // Gửi request lên server
-        axios.put('https://bc7d-117-1-109-141.ngrok-free.app/api/profile',
+        axios.put(API_PROFILE,
             formData,
             {
                 headers: {
@@ -80,10 +89,8 @@ const Register = ({ navigation }) => {
 
     React.useEffect(() => {
         getProfile();
-    }, [])
-    // useFocusEffect(() => {
-    //     getProfile();
-    // });
+    }, []);
+
     return (
 
         <View style={styles.container}>

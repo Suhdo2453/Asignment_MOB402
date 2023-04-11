@@ -3,23 +3,27 @@ import React, { useRef, useState } from 'react';
 import { View, Text, TextInput, StyleSheet, FlatList, TouchableOpacity, Image } from 'react-native';
 import getUserInfo from '../../components/GetUserInfo';
 import axios from 'axios';
+import { API_PRODUCT, URL_API } from '../../data/API';
 
 
 const SearchScreen = ({ navigation }) => {
     //const route = useRoute();
 
-    var token = '';
     const [data, setData] = useState('');
+    let token = ''
 
     const getToken = async () => {
-        const user = await getUserInfo();
-        token = user.token;
-        console.log(token);
+        if (!token) {
+            const user = await getUserInfo();
+            token = user.token;
+        }
     }
 
-    const search = (txt) => {
+    const search = async (txt) => {
+
+        if (!token) return;
         console.log(token);
-        axios.get(`https://bc7d-117-1-109-141.ngrok-free.app/api/products?search_text=${txt}`,
+        axios.get(API_PRODUCT + `?search_text=${txt}`,
             {
                 headers: {
                     Authorization: `Bearer ${token}`,
@@ -37,7 +41,7 @@ const SearchScreen = ({ navigation }) => {
     }
 
     const itemHandler = (id) => {
-        navigation.navigate('Detail', { id: id, token: token });
+        navigation.navigate('Detail', { id: id });
     }
 
     React.useEffect(() => {
@@ -63,7 +67,7 @@ const SearchScreen = ({ navigation }) => {
     const Item = ({ imageSource, itemName, itemId }) => {
         return (
             <TouchableOpacity style={styles.container_item} onPress={() => itemHandler(itemId)} >
-                <Image style={styles.image} source={{ uri: `https://bc7d-117-1-109-141.ngrok-free.app${imageSource}` }} />
+                <Image style={styles.image} source={{ uri: URL_API + imageSource }} />
                 <Text style={styles.text}>{itemName}</Text>
             </TouchableOpacity>
         );

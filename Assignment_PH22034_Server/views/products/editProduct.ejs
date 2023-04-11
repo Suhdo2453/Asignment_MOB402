@@ -9,12 +9,12 @@
                         <!-- form content -->
                         <div class="col-12">
                             <label for="inputName" class="form-label">Name</label>
-                            <input type="text" class="form-control" id="inputName" name="name"
-                                value="<%= objPD.name %>">
+                            <input type="text" class="form-control" id="inputName" name="name" value="<%= objPD.name %>"
+                                required>
                         </div>
                         <div class="col-12">
                             <label for="inputCategory" class="form-label">Category</label>
-                            <select type="text" class="form-select" id="inputCategory" name="category">
+                            <select type="text" class="form-select" id="inputCategory" name="category" required>
                                 <option selected>Choose...</option>
                                 <% categories.forEach(category=>{
                                     let selected = '';
@@ -30,12 +30,12 @@
                         <div class="col-md-6">
                             <label for="inputPrice" class="form-label">Price</label>
                             <input type="text" class="form-control" id="inputPrice" name="price"
-                                value="<%= objPD.price %>">
+                                value="<%= objPD.price %>" required>
                         </div>
                         <div class="col-12">
                             <label for="inputDescription" class="form-label">Description</label>
-                            <textarea name="description" id="inputDescription" class="form-control" cols="60"
-                                rows="3"><%= objPD.description %></textarea>
+                            <textarea name="description" id="inputDescription" class="form-control" cols="60" rows="3"
+                                required><%= objPD.description %></textarea>
                         </div>
                         <div class="col-12">
                             <div class="modal-footer">
@@ -48,7 +48,8 @@
                     </form>
                 </div>
                 <div class="col-md-6 text-center">
-                    <img id="previewImg" src="/<%= objPD.image %>" alt="Preview image" style="max-width: 100%;">
+                    <img id="previewImg" src="http://localhost:3000/<%= objPD.image %>" alt="Preview image"
+                        style="max-width: 100%;">
                     <button type="button" class="btn btn-primary mt-3" onclick="$('#image').trigger('click')">Choose
                         Image</button>
 

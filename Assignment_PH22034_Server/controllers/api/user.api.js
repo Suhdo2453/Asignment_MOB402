@@ -28,6 +28,7 @@ exports.reg = async (req, res, next)=>{
         const user = new model.userModel(req.body);
 
         user.passwd = await bcrypt.hash(req.body.passwd, salt);
+        user.role = 0;
  
         user.token = await user.generateAuthToken();
         console.log(req.file);

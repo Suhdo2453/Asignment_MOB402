@@ -2,17 +2,23 @@ import { StyleSheet, Text, View, Image, ActivityIndicator, ScrollView } from 're
 import React, { useState } from 'react'
 import { useRoute } from '@react-navigation/native';
 import axios from 'axios';
+import { API_PRODUCT, URL_API } from '../../data/API';
+import getUserInfo from '../../components/GetUserInfo';
 
 const Detail = () => {
     const route = useRoute();
     const [product, setProduct] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
-
-    const { id, token } = route.params;
+    var token = '';
+    const { id } = route.params;
 
     const getData = async () => {
         setIsLoading(true);
-        axios.get(`https://bc7d-117-1-109-141.ngrok-free.app/api/products/${id}`,
+        if (token == '') {
+            const user = await getUserInfo();
+            token = user.token
+        }
+        axios.get(API_PRODUCT + `/${id}`,
             {
                 headers: {
                     Authorization: `Bearer ${token}`
@@ -42,7 +48,7 @@ const Detail = () => {
 
     return (
         <ScrollView style={styles.container}>
-            <Image source={{ uri: `https://bc7d-117-1-109-141.ngrok-free.app${product ? product.image : ''}` }} style={styles.image} />
+            <Image source={{ uri: `${URL_API}${(product ? product.image : '')}` }} style={styles.image} />
             <View style={styles.detailsContainer}>
                 <Text style={styles.name}>{product.name}</Text>
                 <Text style={styles.price}>{product.price} VND</Text>

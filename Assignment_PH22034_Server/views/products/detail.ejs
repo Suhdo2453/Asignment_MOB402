@@ -1,10 +1,11 @@
 <%- include('../inc/header') %>
 
     <div class="d-flex justify-content-center align-items-center" style="min-height: 100vh;">
-        <div class="card mx-auto">
+        <div class="card mx-auto" style="max-width: 900px;">
             <!-- Nội dung của card -->
             <div class="card">
-                <img src="/<%= data.image %>" class="justify-content-center" alt="Product Image" width="500">
+                <img src="http://localhost:3000/<%= data.image %>" class="justify-content-center" alt="Product Image"
+                    width="50%" height="50%">
                 <div class="card-body">
                     <h5 class="card-title">
                         <%= data.name %>

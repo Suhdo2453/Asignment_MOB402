@@ -8,13 +8,27 @@ exports.SortMiddleware = (req, res, next) => {
     res.locals.order = req.query.order;
     res.locals.sort = req.query.sort || null;
 
-    // if(req.query.hasOwnProperty('sort')){
-    //     Object.assign(res.locals.sort, {
-    //         enabled: true,
-    //         type: req.query.type,
-    //         column: req.query.column
-    //     });
-    // }
-
     next();
 }
+
+exports.validateUserFields = (req, res, next) => {
+    const { username, email, passwd } = req.body;
+    let error = '';
+  
+    // Kiểm tra tên đăng nhập không được để trống
+    if (!username) {
+      error = 'Username cannot be empty';
+    }
+  
+    // Kiểm tra email hợp lệ
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      error = 'Invalid email address';
+    }
+  
+    if (error) {
+      res.status(400).json({ message: error });
+    } else {
+      next();
+    }
+  };

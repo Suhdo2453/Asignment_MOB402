@@ -2,7 +2,7 @@ const Model = require('../models/category.model');
 const paginate = require('../ultilities/pagination');
 
 exports.getList= async (req, res, next)=> {
-    let itemsPerPage = 2;
+    let itemsPerPage = 5;
     let page = parseInt(req.query.page) || 1;
     let name = req.query.name||null;
     let condition = {};

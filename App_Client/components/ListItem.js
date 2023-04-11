@@ -1,6 +1,7 @@
 import { StyleSheet, Text, View, Image, Dimensions, TouchableOpacity } from 'react-native'
 import React from 'react'
 import image from '../assets/favicon.png';
+import { URL_API } from '../data/API';
 
 const windowWidth = Dimensions.get('window').width
 
@@ -8,7 +9,7 @@ const ListItem = ({ item, onPress }) => {
     return (
         <TouchableOpacity style={styles.container} onPress={onPress}>
             <View >
-                <Image style={styles.image} source={{ uri: `https://bc7d-117-1-109-141.ngrok-free.app${item.image}` }} />
+                <Image style={styles.image} source={{ uri: `${URL_API + item.image}` }} />
                 <View>
                     <Text style={styles.title}>{item.name}</Text>
                     <Text style={styles.price}>{item.price}</Text>

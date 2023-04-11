@@ -5,7 +5,7 @@ const bcrypt = require("bcrypt");
 const fs = require('fs');
 
 exports.getList = async (req, res, next)=>{
-    let itemsPerPage = 2;
+    let itemsPerPage = 5;
     let page = parseInt(req.query.page) || 1;
     const selectedOption = req.query.role;
     let role = req.query.role||null;

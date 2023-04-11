@@ -80,7 +80,8 @@
                                     <td class="text-center">
                                         <%= element.category.name %>
                                     </td>
-                                    <td class="text-center">
+                                    <td class="text-center"
+                                        style="max-width: 150px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
                                         <%= element.description %>
                                     </td>
                                     <td class="text-center">
@@ -148,11 +149,11 @@
                         <form class="row g-3" enctype="multipart/form-data" method="POST" action="/products/create">
                             <div class="col-12">
                                 <label for="inputName" class="form-label">Name</label>
-                                <input type="text" class="form-control" id="inputName" name="name">
+                                <input type="text" class="form-control" id="inputName" name="name" required>
                             </div>
                             <div class="col-md-6">
                                 <label for="inputCategory" class="form-label">Category</label>
-                                <select type="text" class="form-select" id="inputCategory" name="category">
+                                <select type="text" class="form-select" id="inputCategory" name="category" required>
                                     <option selected>Choose...</option>
                                     <% categories.forEach(category=>{ %>
                                         <option value="<%= category._id %>">
@@ -163,11 +164,12 @@
                             </div>
                             <div class="col-md-6">
                                 <label for="inputPrice" class="form-label">Price</label>
-                                <input type="text" class="form-control" id="inputPrice" name="price">
+                                <input type="text" class="form-control" id="inputPrice" name="price" required>
                             </div>
                             <div class="col-12">
                                 <label for="inputDescription" class="form-label">Description</label>
-                                <textarea name="description" id="inputDescription" cols="60" rows="3"></textarea>
+                                <textarea name="description" id="inputDescription" cols="60" rows="3"
+                                    required></textarea>
                             </div>
                             <div class="form-group">
                                 <label for="image">Image</label>

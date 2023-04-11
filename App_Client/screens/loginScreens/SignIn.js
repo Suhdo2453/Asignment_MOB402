@@ -5,6 +5,7 @@ import ButtonCustom from '../../components/ButtonCustom';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { API_LOGIN } from '../../data/API';
 
 
 const SignIn = ({ navigation }) => {
@@ -15,8 +16,12 @@ const SignIn = ({ navigation }) => {
 
     const handleLogin = async () => {
         setLoading(true);
+
+        const formData = new FormData();
+        formData.append('username', username);
+        formData.append('passwd', password);
         // Gửi request lên server
-        axios.post('https://bc7d-117-1-109-141.ngrok-free.app/api/login',
+        axios.post(API_LOGIN,
             {
                 username: username,
                 passwd: password
