@@ -5,7 +5,7 @@ Connect to your mongoDB including collections:
 
 
   `category`:
-```bash
+```json
             {
               "_id": {
                 "$oid": "64250cd3a43d776e3a3c03c7"
@@ -15,7 +15,7 @@ Connect to your mongoDB including collections:
  ```
               
    `products`:
-   ```bash
+   ```json
              {
                 "_id": {
                   "$oid": "6432338035bce636016a29a1"
@@ -30,7 +30,7 @@ Connect to your mongoDB including collections:
               }
  ```
    `users`:
-   ```bash
+   ```json
               {
                 "_id": {
                   "$oid": "643291142503e7c6f172c75e"
