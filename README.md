@@ -2,16 +2,21 @@
 Run `$npm install` in client and server then create file .env with content `TOKEN_SEC_KEY=<random character>` in folder server.
 You need replace API link by your API link in `App_client/data/API.js`.
 Connect to your mongoDB including collections:
+
+
   `category`:
-            `{
+```bash
+            {
               "_id": {
                 "$oid": "64250cd3a43d776e3a3c03c7"
                },
               "name": "Samsung 1"
-              }`
+             }
+ ```
               
    `products`:
-              `{
+   ```bash
+             {
                 "_id": {
                   "$oid": "6432338035bce636016a29a1"
                 },
@@ -22,10 +27,11 @@ Connect to your mongoDB including collections:
                   "$oid": "64250cd3a43d776e3a3c03ca"
                 },
                 "description": "ffdsfd"
-              }`
-              
+              }
+ ```
    `users`:
-             `{
+   ```bash
+              {
                 "_id": {
                   "$oid": "643291142503e7c6f172c75e"
                 },
@@ -36,4 +42,5 @@ Connect to your mongoDB including collections:
                 "role": 1,
                 "__v": 0,
                 "token":"eyJhbGc"
-              }`
+              }
+```
